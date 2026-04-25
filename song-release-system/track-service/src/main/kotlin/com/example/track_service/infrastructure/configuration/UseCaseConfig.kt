@@ -1,9 +1,9 @@
 package com.example.track_service.infrastructure.configuration
 
 import com.example.common.messaging.EventPublisher
+import com.example.track_service.application.handlers.CreateTrackCommandHandler
+import com.example.track_service.application.handlers.MarkTrackAsUploadedCommandHandler
 import com.example.track_service.application.ports.TrackRepository
-import com.example.track_service.application.usecases.CreateTrackUseCase
-import com.example.track_service.application.usecases.OnFileAttachedUseCase
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -14,17 +14,17 @@ import org.springframework.context.annotation.Configuration
 class UseCaseConfig {
 
     @Bean
-    fun createTrackUseCase(
+    fun createTrackCommandHandler(
         repository: TrackRepository
-    ): CreateTrackUseCase {
-       return CreateTrackUseCase(repository)
+    ): CreateTrackCommandHandler {
+       return CreateTrackCommandHandler(repository)
     }
 
     @Bean
-    fun onFileAttachedUseCase(
+    fun markTrackAsUploadedHandler(
         eventPublisher: EventPublisher,
         repository: TrackRepository
-    ) : OnFileAttachedUseCase {
-        return OnFileAttachedUseCase(eventPublisher, repository)
+    ) : MarkTrackAsUploadedCommandHandler {
+        return MarkTrackAsUploadedCommandHandler(eventPublisher, repository)
     }
 }

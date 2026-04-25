@@ -1,7 +1,7 @@
 package com.example.playlist_service.infrastructure.configuration
 
 import com.example.playlist_service.application.ports.PlaylistRepository
-import com.example.playlist_service.application.usecases.AddToPlaylistUseCase
+import com.example.playlist_service.application.handlers.AddTrackToPlaylistCommandHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -14,7 +14,7 @@ class UseCaseConfig {
     @Bean
     fun addToPlaylistUseCase(
         repository: PlaylistRepository
-    ): AddToPlaylistUseCase {
-        return AddToPlaylistUseCase(repository)
+    ): AddTrackToPlaylistCommandHandler {
+        return AddTrackToPlaylistCommandHandler(repository)
     }
 }

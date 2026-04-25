@@ -1,8 +1,8 @@
 package com.example.tag_service.infrastructure.configuration
 
 import com.example.common.messaging.EventPublisher
+import com.example.tag_service.application.handlers.AssignTagsCommandHandler
 import com.example.tag_service.application.ports.TagRepository
-import com.example.tag_service.application.usecases.AssignTagsUseCase
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -16,7 +16,7 @@ class UseCaseConfig {
     fun assignTagsUseCase(
         eventPublisher: EventPublisher,
         repository: TagRepository,
-    ): AssignTagsUseCase {
-        return AssignTagsUseCase(repository, eventPublisher)
+    ): AssignTagsCommandHandler {
+        return AssignTagsCommandHandler(repository, eventPublisher)
     }
 }

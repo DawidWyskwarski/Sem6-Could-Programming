@@ -1,6 +1,7 @@
 package com.example.track_service.infrastructure.messaging
 
-import com.example.track_service.application.usecases.OnFileAttachedUseCase
+import com.example.common.mediator.Mediator
+import com.example.track_service.domain.commands.MarkTrackAsUploadedCommand
 import com.example.track_service.domain.event.incoming.FileAttachedEvent
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
@@ -16,7 +17,7 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding
  */
 @Component
 class FileAttachedListener(
-    private val onFileAttachedUseCase: OnFileAttachedUseCase
+    private val mediator: Mediator
 ) {
 
     private val logger = LoggerFactory.getLogger(FileAttachedListener::class.java)
@@ -32,7 +33,9 @@ class FileAttachedListener(
     fun handleFileAttachedEvent(event: FileAttachedEvent) {
         logger.info("Received FileAttachedEvent for trackId={}", event.trackId)
 
-        onFileAttachedUseCase.execute(event.trackId)
+        mediator.send(
+            MarkTrackAsUploadedCommand(event.trackId)
+        )
 
         logger.info("Successfully processed FileAttachedEvent for trackId={}", event.trackId)
     }

@@ -1,6 +1,7 @@
 package com.example.tag_service.infrastructure.messaging
 
-import com.example.tag_service.application.usecases.AssignTagsUseCase
+import com.example.common.mediator.Mediator
+import com.example.tag_service.domain.commands.AssignTagsCommand
 import com.example.tag_service.domain.event.incoming.TrackUploadedEvent
 import org.springframework.amqp.rabbit.annotation.Exchange
 import org.springframework.amqp.rabbit.annotation.Queue
@@ -16,7 +17,7 @@ import org.springframework.amqp.core.ExchangeTypes
  */
 @Component
 class TrackUploadedListener(
-    private val assignTagsUseCase: AssignTagsUseCase,
+    private val mediator: Mediator,
 ) {
 
     private val logger = LoggerFactory.getLogger(TrackUploadedListener::class.java)
@@ -30,10 +31,14 @@ class TrackUploadedListener(
         ]
     )
     fun handleTrackUploadedEvent(event: TrackUploadedEvent) {
-        logger.info("Received TrackUploadedEvent for trackId: {} with keywords: {}", event.trackId, event.keywords)
+        logger.info("Received TrackUploadedEvent for trackId: ${event.trackId} with keywords: ${event.keywords}")
 
-        assignTagsUseCase.execute(event.trackId, event.keywords)
+        mediator.send(
+            AssignTagsCommand(
+                event.trackId, event.keywords
+            )
+        )
 
-        logger.info("Successfully processed TrackUploadedEvent for trackId: {}", event.trackId)
+        logger.info("Successfully processed TrackUploadedEvent for trackId: ${event.trackId}")
     }
 }

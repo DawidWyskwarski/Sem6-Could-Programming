@@ -1,14 +1,15 @@
 package com.example.notification_service.infrastructure.messaging
 
-import com.example.notification_service.application.usecases.NotifyFollowersUseCase
+import com.example.common.mediator.Mediator
+import com.example.notification_service.domain.commands.NotifyFollowersCommand
 import com.example.notification_service.domain.event.incoming.TrackUploadedEvent
+import org.slf4j.LoggerFactory
+import org.springframework.amqp.core.ExchangeTypes
 import org.springframework.amqp.rabbit.annotation.Exchange
 import org.springframework.amqp.rabbit.annotation.Queue
 import org.springframework.amqp.rabbit.annotation.QueueBinding
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
-import org.slf4j.LoggerFactory
-import org.springframework.amqp.core.ExchangeTypes
 
 /**
  * Listener for handling TrackUploadedEvent messages from RabbitMQ.
@@ -16,7 +17,7 @@ import org.springframework.amqp.core.ExchangeTypes
  */
 @Component
 class TrackUploadedListener(
-    private val notifyFollowersUseCase: NotifyFollowersUseCase
+    private val mediator: Mediator
 ) {
 
      private val logger = LoggerFactory.getLogger(TrackUploadedListener::class.java)
@@ -30,14 +31,16 @@ class TrackUploadedListener(
          ]
      )
      fun handleTrackUploadedEvent(event: TrackUploadedEvent) {
-         logger.info("Received TrackUploadedEvent for trackId: {}, artistId: {}, title: '{}'", event.trackId, event.artistId, event.title)
+         logger.info("Received TrackUploadedEvent for trackId: ${event.trackId}, artistId: ${event.artistId}, title: '${event.title}'")
 
-         notifyFollowersUseCase.execute(
-             artistId = event.artistId,
-             trackId = event.trackId,
-             trackTitle = event.title
+         mediator.send(
+             NotifyFollowersCommand(
+                 artistId = event.artistId,
+                 trackId = event.trackId,
+                 trackTitle = event.title
+             )
          )
 
-         logger.info("Successfully processed TrackUploadedEvent for trackId: {}", event.trackId)
+         logger.info("Successfully processed TrackUploadedEvent for trackId: ${event.trackId}")
      }
 }

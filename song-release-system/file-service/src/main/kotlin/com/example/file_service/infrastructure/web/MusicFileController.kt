@@ -1,6 +1,7 @@
 package com.example.file_service.infrastructure.web
 
-import com.example.file_service.application.usecases.AttachFileToTrackUseCase
+import com.example.common.mediator.Mediator
+import com.example.file_service.domain.commands.AttachFileToTrackCommand
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,7 +18,7 @@ import java.util.*
 @RestController()
 @RequestMapping("/api/files")
 class MusicFileController(
-    val attachFIleToTrackUseCase: AttachFileToTrackUseCase,
+    val mediator: Mediator,
 ) {
 
     private val logger = LoggerFactory.getLogger(MusicFileController::class.java)
@@ -27,12 +28,19 @@ class MusicFileController(
         @RequestParam(value = "trackId") trackId: UUID,
         @RequestParam(value = "file") file: MultipartFile
     ) {
-        logger.info("Received file to attach: name={}, contentType={}, size={}", file.originalFilename, file.contentType, file.size)
+        logger.info(
+            "Received file to attach: name={}, contentType={}, size={}",
+            file.originalFilename,
+            file.contentType,
+            file.size
+        )
 
-        attachFIleToTrackUseCase.execute(
-            trackId = trackId,
-            fileName = file.originalFilename ?: "",
-            file = file.bytes
+        mediator.send(
+            AttachFileToTrackCommand(
+                trackId = trackId,
+                fileName = file.originalFilename ?: "",
+                file = file.bytes
+            )
         )
 
         logger.info("Successfully initiated file attach usecase for trackId={}", trackId)

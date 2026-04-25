@@ -1,6 +1,7 @@
 package com.example.track_service.infrastructure.web
 
-import com.example.track_service.application.usecases.CreateTrackUseCase
+import com.example.common.mediator.Mediator
+import com.example.track_service.domain.commands.CreateTrackCommand
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,7 +19,7 @@ import java.util.UUID
 @RestController()
 @RequestMapping("/api/tracks")
 class TrackController(
-    val createTrackUseCase: CreateTrackUseCase
+    val mediator: Mediator,
 ) {
 
     private val logger = LoggerFactory.getLogger(TrackController::class.java)
@@ -32,10 +33,8 @@ class TrackController(
 
         logger.info("Received request to create track with title={}, artistId={}", title, artistId)
 
-        val trackId = createTrackUseCase.execute(
-            title = title,
-            artistId = artistId,
-            keywords = keywords
+        val trackId = mediator.send(
+            CreateTrackCommand(title, artistId, keywords)
         )
 
         logger.info("Successfully created track with id={}", trackId)

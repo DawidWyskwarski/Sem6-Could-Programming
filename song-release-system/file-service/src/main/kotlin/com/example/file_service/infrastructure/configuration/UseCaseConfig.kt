@@ -2,7 +2,7 @@ package com.example.file_service.infrastructure.configuration
 
 import com.example.common.messaging.EventPublisher
 import com.example.file_service.application.ports.MusicFilesRepository
-import com.example.file_service.application.usecases.AttachFileToTrackUseCase
+import com.example.file_service.application.handlers.AttachFileToTrackCommandHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -13,12 +13,12 @@ import org.springframework.context.annotation.Configuration
 class UseCaseConfig {
 
     @Bean
-    fun attachFileToTrackUseCase(
+    fun attachFileToTrackCommandHandler(
         eventPublisher: EventPublisher,
         musicFileRepository: MusicFilesRepository
-    ) : AttachFileToTrackUseCase {
+    ) : AttachFileToTrackCommandHandler {
 
-        return AttachFileToTrackUseCase(
+        return AttachFileToTrackCommandHandler(
             eventPublisher = eventPublisher,
             repository = musicFileRepository
         )

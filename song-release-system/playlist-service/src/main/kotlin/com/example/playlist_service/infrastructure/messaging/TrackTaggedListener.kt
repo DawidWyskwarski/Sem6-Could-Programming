@@ -1,6 +1,7 @@
 package com.example.playlist_service.infrastructure.messaging
 
-import com.example.playlist_service.application.usecases.AddToPlaylistUseCase
+import com.example.common.mediator.Mediator
+import com.example.playlist_service.domain.commands.AddTrackToPlaylistCommand
 import com.example.playlist_service.domain.event.incoming.TrackTaggedEvent
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.ExchangeTypes
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class TrackTaggedListener(
-    private val addToPlaylistUseCase: AddToPlaylistUseCase
+    private val mediator: Mediator
 ) {
 
     private val logger = LoggerFactory.getLogger(TrackTaggedListener::class.java)
@@ -30,10 +31,14 @@ class TrackTaggedListener(
         ]
     )
     fun handleTrackTaggedEvent(event: TrackTaggedEvent) {
-        logger.info("Received TrackTaggedEvent for trackId={} with {} tags", event.trackId, event.tagIds.size)
+        logger.info("Received TrackTaggedEvent for trackId=${event.trackId} with ${event.tagIds.size} tags")
 
-        addToPlaylistUseCase.execute(event.trackId, event.tagIds)
+        mediator.send(
+            AddTrackToPlaylistCommand(
+                event.trackId, event.tagIds
+            )
+        )
 
-        logger.info("Successfully processed TrackTaggedEvent for trackId={}", event.trackId)
+        logger.info("Successfully processed TrackTaggedEvent for trackId=${event.trackId}")
     }
 }

@@ -1,28 +1,28 @@
-package com.example.track_service.application.usecases
+package com.example.track_service.application.handlers
 
+import com.example.common.commands.CommandHandler
 import com.example.common.messaging.EventPublisher
 import com.example.track_service.application.ports.TrackRepository
+import com.example.track_service.domain.commands.MarkTrackAsUploadedCommand
 import com.example.track_service.domain.event.outgoing.TrackUploadedEvent
 import com.example.track_service.domain.model.Track
 import org.slf4j.LoggerFactory
-import java.util.*
 
-/**
- * Use case for handling the FileAttachedEvent when a music file is attached to a track.
- * This use case is responsible for updating the track status to UPLOADED and publishing a TrackUploadedEvent.
- */
-class OnFileAttachedUseCase(
+class MarkTrackAsUploadedCommandHandler(
     private val publisher: EventPublisher,
     private val repository: TrackRepository
-) {
-    private val logger = LoggerFactory.getLogger(OnFileAttachedUseCase::class.java)
+) : CommandHandler<MarkTrackAsUploadedCommand, Unit> {
 
-    fun execute(trackId: UUID) {
+    private val logger = LoggerFactory.getLogger(MarkTrackAsUploadedCommandHandler::class.java)
+
+    override fun handle(command: MarkTrackAsUploadedCommand) {
+        val trackId = command.trackId
+
         logger.info("Executing OnFileAttachedUseCase for trackId={}", trackId)
 
         // If track is not found, we log a warning and ignore the event
         var track: Track = repository.findById(trackId) ?: run {
-            logger.warn("Track with id={} not found in the repository, ignoring FileAttachedEvent", trackId)
+            logger.warn("No Track with id={} found in the repository, ignoring FileAttachedEvent", trackId)
             return
         }
 
