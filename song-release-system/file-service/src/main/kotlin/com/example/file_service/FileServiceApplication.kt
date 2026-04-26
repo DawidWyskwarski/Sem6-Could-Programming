@@ -1,9 +1,14 @@
 package com.example.file_service
 
+import io.awspring.cloud.autoconfigure.core.CredentialsProviderAutoConfiguration
+import io.awspring.cloud.autoconfigure.core.RegionProviderAutoConfiguration
+import io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@SpringBootApplication(scanBasePackages = ["com.example.file_service", "com.example.common"])
+@SpringBootApplication(
+	scanBasePackages = ["com.example.file_service", "com.example.common"]
+)
 class FileServiceApplication
 
 /**

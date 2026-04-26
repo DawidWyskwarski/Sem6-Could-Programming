@@ -33,6 +33,9 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	implementation(project(":common"))
+
+	implementation("io.awspring.cloud:spring-cloud-aws-starter-s3:4.0.0")
+	implementation("org.apache.tika:tika-core:2.9.1")
 }
 
 kotlin {

@@ -23,4 +23,12 @@ class FileExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(mapOf("error" to (ex.message ?: "Invalid file payload")))
     }
+
+    @ExceptionHandler(IllegalStateException::class)
+    fun handleIllegalStateException(ex: IllegalStateException): ResponseEntity<Map<String, String>> {
+        logger.warn("Illegal state exception occurred: {}", ex.message)
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(mapOf("error" to (ex.message ?: "Illegal state")))
+    }
 }
