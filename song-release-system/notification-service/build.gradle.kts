@@ -33,6 +33,8 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	implementation(project(":common"))
+
+	implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 }
 
 kotlin {

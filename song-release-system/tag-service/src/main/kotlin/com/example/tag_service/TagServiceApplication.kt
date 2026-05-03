@@ -1,5 +1,6 @@
 package com.example.tag_service
 
+import io.github.cdimascio.dotenv.dotenv
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
@@ -15,5 +16,15 @@ class TagServiceApplication
  *   to consume categorized tracks.
  */
 fun main(args: Array<String>) {
+
+	val dotenv = dotenv {
+		directory = "./tag-service"
+		ignoreIfMissing = true
+	}
+
+	dotenv.entries().forEach { entry ->
+		System.setProperty(entry.key, entry.value)
+	}
+
 	runApplication<TagServiceApplication>(*args)
 }

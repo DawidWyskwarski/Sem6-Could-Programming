@@ -1,5 +1,6 @@
 package com.example.track_service
 
+import io.github.cdimascio.dotenv.dotenv
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
@@ -14,5 +15,15 @@ class TrackServiceApplication
  * - Emits TrackUploadedEvent for downstream processing (e.g., tagging, notifications).
  */
 fun main(args: Array<String>) {
+
+	val dotenv = dotenv {
+		directory = "./track-service"
+		ignoreIfMissing = true
+	}
+
+	dotenv.entries().forEach { entry ->
+		System.setProperty(entry.key, entry.value)
+	}
+
 	runApplication<TrackServiceApplication>(*args)
 }

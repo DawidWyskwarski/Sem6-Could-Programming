@@ -1,5 +1,6 @@
 package com.example.notification_service
 
+import io.github.cdimascio.dotenv.dotenv
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
@@ -14,5 +15,15 @@ import org.springframework.boot.runApplication
 class NotificationServiceApplication
 
 fun main(args: Array<String>) {
+
+	val dotenv = dotenv {
+		directory = "./notification-service"
+		ignoreIfMissing = true
+	}
+
+	dotenv.entries().forEach { entry ->
+		System.setProperty(entry.key, entry.value)
+	}
+
 	runApplication<NotificationServiceApplication>(*args)
 }

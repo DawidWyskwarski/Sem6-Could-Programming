@@ -1,8 +1,6 @@
 package com.example.file_service
 
-import io.awspring.cloud.autoconfigure.core.CredentialsProviderAutoConfiguration
-import io.awspring.cloud.autoconfigure.core.RegionProviderAutoConfiguration
-import io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration
+import io.github.cdimascio.dotenv.dotenv
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
@@ -20,5 +18,15 @@ class FileServiceApplication
  *   that the audio payload is ready.
  */
 fun main(args: Array<String>) {
+
+	val dotenv = dotenv {
+		directory = "./file-service"
+		ignoreIfMissing = true
+	}
+
+	dotenv.entries().forEach { entry ->
+		System.setProperty(entry.key, entry.value)
+	}
+
 	runApplication<FileServiceApplication>(*args)
 }

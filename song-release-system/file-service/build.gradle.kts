@@ -36,6 +36,7 @@ dependencies {
 
 	implementation("io.awspring.cloud:spring-cloud-aws-starter-s3:4.0.0")
 	implementation("org.apache.tika:tika-core:2.9.1")
+	implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 }
 
 kotlin {
