@@ -1,0 +1,45 @@
+services:
+  track-service:
+    build:
+      context: .
+      dockerfile: ./track-service/Dockerfile
+    env_file:
+      - ./track-service/.env
+    ports:
+      - "8081:8080"
+
+  tag-service:
+    build:
+      context: .
+      dockerfile: ./tag-service/Dockerfile
+    env_file:
+      - ./tag-service/.env
+    ports:
+      - "8082:8080"
+
+  playlist-service:
+    build:
+      context: .
+      dockerfile: ./playlist-service/Dockerfile
+    env_file:
+      - ./playlist-service/.env
+    ports:
+      - "8084:8080"
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: ./notification-service/Dockerfile
+    env_file:
+      - ./notification-service/.env
+    ports:
+      - "8085:8080"
+
+  file-service:
+    build:
+      context: .
+      dockerfile: ./file-service/Dockerfile
+    env_file:
+      - ./file-service/.env
+    ports:
+      - "8083:8080"

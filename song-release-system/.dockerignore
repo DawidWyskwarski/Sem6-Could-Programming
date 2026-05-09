@@ -1,0 +1,11 @@
+**/build/
+.gradle/
+.idea/
+
+**/src/test/
+
+.git/
+.gitignore
+.gitattributes
+
+**/.env
