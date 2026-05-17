@@ -1,5 +1,6 @@
 services:
   track-service:
+    image: dawidwyskwarski/track-service:latest
     build:
       context: .
       dockerfile: ./track-service/Dockerfile
@@ -9,6 +10,7 @@ services:
       - "8081:8080"
 
   tag-service:
+    image: dawidwyskwarski/tag-service:latest
     build:
       context: .
       dockerfile: ./tag-service/Dockerfile
@@ -18,6 +20,7 @@ services:
       - "8082:8080"
 
   playlist-service:
+    image: dawidwyskwarski/playlist-service:latest
     build:
       context: .
       dockerfile: ./playlist-service/Dockerfile
@@ -27,6 +30,7 @@ services:
       - "8084:8080"
 
   notification-service:
+    image: dawidwyskwarski/notification-service:latest
     build:
       context: .
       dockerfile: ./notification-service/Dockerfile
@@ -36,6 +40,7 @@ services:
       - "8085:8080"
 
   file-service:
+    image: dawidwyskwarski/file-service:latest
     build:
       context: .
       dockerfile: ./file-service/Dockerfile

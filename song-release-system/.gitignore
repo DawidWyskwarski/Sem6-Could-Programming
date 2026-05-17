@@ -38,3 +38,11 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+
+### Terraform ###
+terraform.tfvars
+*.tfvars
+.terraform/
+*.tfstate
+*.tfstate.backup
