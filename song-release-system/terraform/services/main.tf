@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
       version = "~> 6.0"
     }
   }
@@ -17,26 +17,26 @@ data "aws_vpc" "default" {
 
 data "aws_subnets" "default" {
   filter {
-    name   = "vpc-id"
+    name = "vpc-id"
     values = [data.aws_vpc.default.id]
   }
 }
 
 resource "aws_security_group" "ecs_sg" {
-  name   = "ecs-sg"
+  name = "ecs-sg"
   vpc_id = data.aws_vpc.default.id
 
   ingress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
+    from_port = 0
+    to_port = 65535
+    protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -46,28 +46,28 @@ resource "aws_ecs_cluster" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "svc" {
-  for_each          = var.services
-  name              = "/ecs/${each.key}"
+  for_each = var.services
+  name = "/ecs/${each.key}"
   retention_in_days = 7
 }
 
 resource "aws_ecs_task_definition" "svc" {
-  for_each                 = var.services
-  family                   = each.key
-  network_mode             = "awsvpc"
+  for_each = var.services
+  family = each.key
+  network_mode = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
-  execution_role_arn       = var.lab_role_arn
-  task_role_arn            = var.lab_role_arn
+  cpu = "256"
+  memory = "512"
+  execution_role_arn = var.lab_role_arn
+  task_role_arn = var.lab_role_arn
 
   container_definitions = jsonencode([{
-    name  = each.key
+    name = each.key
     image = "${var.dockerhub_username}/${each.key}:latest"
 
     portMappings = [{
       containerPort = each.value
-      protocol      = "tcp"
+      protocol = "tcp"
     }]
 
     environment = [
@@ -82,7 +82,7 @@ resource "aws_ecs_task_definition" "svc" {
 
     secrets = [
       {
-        name      = "DB_PASSWORD"
+        name = "DB_PASSWORD"
         valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/microservices/${replace(each.key, "-", "_")}/db_password"
       }
     ]
@@ -99,16 +99,16 @@ resource "aws_ecs_task_definition" "svc" {
 }
 
 resource "aws_ecs_service" "svc" {
-  for_each        = var.services
-  name            = each.key
-  cluster         = aws_ecs_cluster.main.id
+  for_each = var.services
+  name = each.key
+  cluster = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.svc[each.key].arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
+  desired_count = 1
+  launch_type = "FARGATE"
 
   network_configuration {
-    subnets          = data.aws_subnets.default.ids
-    security_groups  = [aws_security_group.ecs_sg.id]
+    subnets = data.aws_subnets.default.ids
+    security_groups = [aws_security_group.ecs_sg.id]
     assign_public_ip = true
   }
 }

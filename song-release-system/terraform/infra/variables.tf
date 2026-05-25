@@ -1,6 +1,6 @@
 variable "db_master_password" {
   description = "db master password"
-  type        = string
+  type = string
   sensitive   = true
 }
 

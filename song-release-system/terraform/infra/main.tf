@@ -1,11 +1,11 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
       version = "6.17.0"
     }
     null = {
-      source  = "hashicorp/null"
+      source = "hashicorp/null"
       version = "3.2.4"
     }
     postgresql = {
@@ -77,8 +77,8 @@ resource "aws_db_instance" "main" {
 }
 
 provider "postgresql" {
-  host     = aws_db_instance.main.address
-  port     = 5432
+  host = aws_db_instance.main.address
+  port = 5432
   username = "postgres"
   password = var.db_master_password
   sslmode  = "require"
@@ -87,55 +87,55 @@ provider "postgresql" {
 
 resource "postgresql_database" "service_db" {
   for_each = toset(var.services)
-  name     = each.key
+  name = each.key
 }
 
 resource "postgresql_role" "service_user" {
-  for_each        = toset(var.services)
-  name            = "${each.key}_user"
-  password        = random_password.db_passwords[each.key].result
-  login           = true
-  skip_drop_role  = true
-  depends_on      = [postgresql_database.service_db]
+  for_each = toset(var.services)
+  name = "${each.key}_user"
+  password = random_password.db_passwords[each.key].result
+  login = true
+  skip_drop_role = true
+  depends_on = [postgresql_database.service_db]
 }
 
 resource "postgresql_grant" "service_grant" {
-  for_each    = toset(var.services)
-  database    = each.key
-  role        = "${each.key}_user"
+  for_each = toset(var.services)
+  database = each.key
+  role = "${each.key}_user"
   object_type = "database"
-  privileges  = ["ALL"]
-  depends_on  = [postgresql_role.service_user]
+  privileges = ["ALL"]
+  depends_on = [postgresql_role.service_user]
 }
 
 resource "postgresql_grant" "service_schema_grant" {
-  for_each    = toset(var.services)
-  database    = each.key
-  role        = "${each.key}_user"
-  schema      = "public"
+  for_each = toset(var.services)
+  database = each.key
+  role = "${each.key}_user"
+  schema = "public"
   object_type = "schema"
-  privileges  = ["CREATE", "USAGE"]
-  depends_on  = [postgresql_grant.service_grant]
+  privileges = ["CREATE", "USAGE"]
+  depends_on = [postgresql_grant.service_grant]
 }
 
 resource "random_password" "db_passwords" {
   for_each = toset(var.services)
-  length   = 16
-  special  = false
+  length = 16
+  special = false
 }
 
 // S3 bucket
 resource "aws_s3_bucket" "music_files_bucket" {
   bucket = "uni-cloud-music-files"
-  tags   = {
+  tags = {
     name = "app-storage"
   }
 }
 
 resource "aws_s3_bucket_public_access_block" "app" {
-  bucket                  = aws_s3_bucket.music_files_bucket.id
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  bucket = aws_s3_bucket.music_files_bucket.id
+  block_public_acls = false
+  block_public_policy = false
+  ignore_public_acls = false
+  restrict_public_buckets = false
 }
