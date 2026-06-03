@@ -8,6 +8,17 @@ services:
       - ./track-service/.env
     ports:
       - "8081:8080"
+    networks:
+      - overlay-network
+    deploy:
+      replicas: 4
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
 
   tag-service:
     image: dawidwyskwarski/tag-service:latest
@@ -18,6 +29,17 @@ services:
       - ./tag-service/.env
     ports:
       - "8082:8080"
+    networks:
+      - overlay-network
+    deploy:
+      replicas: 2
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
 
   playlist-service:
     image: dawidwyskwarski/playlist-service:latest
@@ -28,6 +50,16 @@ services:
       - ./playlist-service/.env
     ports:
       - "8084:8080"
+    networks:
+      - overlay-network
+    deploy:
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
 
   notification-service:
     image: dawidwyskwarski/notification-service:latest
@@ -38,6 +70,16 @@ services:
       - ./notification-service/.env
     ports:
       - "8085:8080"
+    networks:
+      - overlay-network
+    deploy:
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
 
   file-service:
     image: dawidwyskwarski/file-service:latest
@@ -48,3 +90,18 @@ services:
       - ./file-service/.env
     ports:
       - "8083:8080"
+    networks:
+      - overlay-network
+    deploy:
+      replicas: 3
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+
+networks:
+  overlay-network:
+    driver: overlay
